@@ -6,6 +6,10 @@ def test_dashboard_shows_refresh_interval(auth_client):
     assert response.status_code == 200
     assert b"Auto-refreshes every 30s" in response.data
     assert b"Refresh now" in response.data
+    assert b"badge-online" in response.data
+    assert b"badge-mock" in response.data
+    assert b"badge-unreachable" in response.data
+
 
 
 def test_dashboard_with_server_includes_refresh_data_attr(auth_client):

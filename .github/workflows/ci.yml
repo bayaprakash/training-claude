@@ -5,28 +5,50 @@ on:
     branches: [main, master]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   test:
+    name: Lint and test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint
+      - name: Lint (ruff)
         run: ruff check app tests
 
       - name: Run tests
         env:
+          # Demo placeholders only — never use production secrets in CI
           SECRET_KEY: ci-test-secret
           ADMIN_USERNAME: admin
           ADMIN_PASSWORD_HASH: scrypt:32768:8:1$cJHo1reDFdv5yrDJ$5ed23c9f87c3a64ff802f883f677c88e802a68bf4f3184ec7546baf46d0ea4e061b7f22f7a44c2cf5c147e6d744acd78b544850caf423252b82de2c43cd34214
-        run: pytest -q
+          FLASK_ENV: testing
+        run: pytest -q --tb=short
+
+      - name: Confirm .env is not tracked
+        run: |
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo ".env must not be committed" >&2
+            exit 1
+          fi
+          echo ".env is not tracked (ok)"

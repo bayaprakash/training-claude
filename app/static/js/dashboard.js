@@ -11,6 +11,24 @@
     return `${value.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
   }
 
+  function severityForPercent(value) {
+    if (value == null || Number.isNaN(Number(value))) return null;
+    const n = Number(value);
+    if (n >= 85) return "crit";
+    if (n >= 70) return "warn";
+    return "good";
+  }
+
+  function applySeverity(dd, box, percent) {
+    if (!dd) return;
+    dd.classList.remove("sev-good", "sev-warn", "sev-crit");
+    if (box) box.classList.remove("sev-good-box", "sev-warn-box", "sev-crit-box");
+    const sev = severityForPercent(percent);
+    if (!sev) return;
+    dd.classList.add(`sev-${sev}`);
+    if (box) box.classList.add(`sev-${sev}-box`);
+  }
+
   function setBadge(el, status) {
     if (!el) return;
     el.className = "badge status-badge";
@@ -29,24 +47,39 @@
     }
   }
 
+  function setCardStatus(card, status) {
+    card.classList.remove("is-online", "is-mock", "is-unreachable", "is-pending");
+    if (status === "online") card.classList.add("is-online");
+    else if (status === "mock") card.classList.add("is-mock");
+    else if (status === "unreachable") card.classList.add("is-unreachable");
+    else card.classList.add("is-pending");
+  }
+
   function fillCard(card, metrics) {
     setBadge(card.querySelector(".status-badge"), metrics.status);
+    setCardStatus(card, metrics.status);
+
     const cpu = card.querySelector(".cpu");
     const mem = card.querySelector(".mem");
     const net = card.querySelector(".net");
     const ports = card.querySelector(".ports");
     const collected = card.querySelector(".collected");
     const portsList = card.querySelector(".ports-list");
+    const cpuBox = cpu ? cpu.closest("div") : null;
+    const memBox = mem ? mem.closest("div") : null;
 
     if (cpu) {
-      cpu.textContent =
-        metrics.cpu && metrics.cpu.percent != null ? `${metrics.cpu.percent}%` : "—";
+      const pct = metrics.cpu ? metrics.cpu.percent : null;
+      cpu.textContent = pct != null ? `${pct}%` : "—";
+      applySeverity(cpu, cpuBox, pct);
     }
     if (mem) {
       if (metrics.memory && metrics.memory.percent != null) {
         mem.textContent = `${metrics.memory.percent}% (${formatBytes(metrics.memory.used)} / ${formatBytes(metrics.memory.free)} free)`;
+        applySeverity(mem, memBox, metrics.memory.percent);
       } else {
         mem.textContent = "—";
+        applySeverity(mem, memBox, null);
       }
     }
     if (net && metrics.network) {
@@ -131,4 +164,3 @@
   setInterval(refreshAll, seconds * 1000);
   setInterval(tickCountdown, 1000);
 })();
-
