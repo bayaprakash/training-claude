@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Sign in · InfraWatch{% endblock %}
+{% block content %}
+<section class="login-shell">
+  <div class="login-panel">
+    <p class="eyebrow">Infrastructure monitoring</p>
+    <h1 class="brand-hero">InfraWatch</h1>
+    <p class="lede">Sign in to view the read-only monitoring shell.</p>
+    <form method="post" action="{{ url_for('auth.login') }}" class="stack">
+      <label>
+        Username
+        <input type="text" name="username" autocomplete="username" required maxlength="128" value="admin">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" autocomplete="current-password" required maxlength="512">
+      </label>
+      <button type="submit" class="btn primary">Sign in</button>
+    </form>
+    <p class="hint">Demo only — default user is configured via environment.</p>
+  </div>
+</section>
+{% endblock %}

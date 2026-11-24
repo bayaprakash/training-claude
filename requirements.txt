@@ -1,0 +1,6 @@
+flask>=3.0,<4
+python-dotenv>=1.0,<2
+paramiko>=3.4,<4
+cryptography>=42,<46
+pytest>=8.0,<9
+ruff>=0.6,<1

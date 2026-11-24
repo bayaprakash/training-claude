@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Servers · InfraWatch{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Servers</h1>
+    <p class="lede">Register Linux hosts. Use <strong>mock</strong> offline or <strong>ssh</strong> for live metrics.</p>
+  </div>
+</section>
+
+<section class="two-col">
+  <form method="post" class="panel stack" autocomplete="off">
+    <h2>Add server</h2>
+    <label>
+      Display name
+      <input type="text" name="display_name" maxlength="128" placeholder="Optional label">
+    </label>
+    <label>
+      Hostname or IP
+      <input type="text" name="hostname" required maxlength="253" placeholder="10.0.0.12 or app-01.local">
+    </label>
+    <label>
+      SSH port
+      <input type="number" name="ssh_port" value="22" min="1" max="65535">
+    </label>
+    <label>
+      SSH username
+      <input type="text" name="ssh_username" required maxlength="64" placeholder="monitor">
+    </label>
+    <label>
+      Auth type
+      <select name="auth_type">
+        <option value="password">Password</option>
+        <option value="key">Private key path</option>
+      </select>
+    </label>
+    <label>
+      Credential (password or key path)
+      <input type="password" name="credential" maxlength="4096" placeholder="Required for SSH mode">
+    </label>
+    <label>
+      Collection mode
+      <select name="collection_mode">
+        <option value="mock">mock — fake metrics</option>
+        <option value="ssh">ssh — live remote</option>
+      </select>
+    </label>
+    <button type="submit" class="btn primary">Add server</button>
+  </form>
+
+  <div class="panel">
+    <h2>Registered</h2>
+    {% if not servers %}
+      <p class="subtle">No servers registered.</p>
+    {% else %}
+      <ul class="server-list">
+        {% for server in servers %}
+        <li>
+          <div>
+            <strong>{{ server.display_name }}</strong>
+            <p class="mono subtle">{{ server.hostname }}:{{ server.ssh_port }} · {{ server.collection_mode }} · {{ server.ssh_username }}</p>
+          </div>
+          <div class="row-actions">
+            <a class="btn" href="{{ url_for('dashboard.server_detail', server_id=server.id) }}">View</a>
+            <form method="post" action="{{ url_for('servers.remove_server', server_id=server.id) }}" onsubmit="return confirm('Remove this server?');">
+              <button type="submit" class="btn danger">Remove</button>
+            </form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

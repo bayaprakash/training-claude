@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ server.display_name }} · InfraWatch{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow"><a href="{{ url_for('dashboard.index') }}">Dashboard</a> / detail</p>
+    <h1>{{ server.display_name }}</h1>
+    <p class="lede mono">{{ server.hostname }}:{{ server.ssh_port }} · mode {{ server.collection_mode }} · user {{ server.ssh_username }}</p>
+    <p class="subtle">Read-only view · auto-refresh {{ refresh_seconds }}s</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn" id="refresh-btn">Refresh now</button>
+  </div>
+</section>
+
+<article class="metric-card detail" data-server-id="{{ server.id }}" id="detail-card" data-refresh="{{ refresh_seconds }}">
+  <header>
+    <h2>Current metrics</h2>
+    <span class="badge badge-pending status-badge">loading</span>
+  </header>
+  <dl class="stat-grid large">
+    <div><dt>CPU</dt><dd class="mono cpu">—</dd></div>
+    <div><dt>Memory</dt><dd class="mono mem">—</dd></div>
+    <div><dt>Network RX/TX</dt><dd class="mono net">—</dd></div>
+  </dl>
+  <h3>Listening ports</h3>
+  <ul class="port-list mono ports-list"><li>Loading…</li></ul>
+  <p class="subtle collected">Waiting for metrics…</p>
+</article>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

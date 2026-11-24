@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · InfraWatch{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="lede">
+      Read-only CPU, memory, network, and ports.
+      Auto-refreshes every {{ refresh_seconds }}s.
+    </p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn" id="refresh-btn">Refresh now</button>
+    <a class="btn primary" href="{{ url_for('servers.manage_servers') }}">Manage servers</a>
+  </div>
+</section>
+
+{% if not servers %}
+  <div class="empty">
+    <p>No servers yet. Add a mock or SSH host to start monitoring.</p>
+    <a class="btn primary" href="{{ url_for('servers.manage_servers') }}">Add server</a>
+  </div>
+{% else %}
+  <p class="subtle mono" id="refresh-hint">Next auto-refresh in {{ refresh_seconds }}s</p>
+  <div id="metrics-grid" class="metrics-grid" data-refresh="{{ refresh_seconds }}">
+    {% for server in servers %}
+    <article class="metric-card" data-server-id="{{ server.id }}">
+      <header>
+        <div>
+          <h2><a href="{{ url_for('dashboard.server_detail', server_id=server.id) }}">{{ server.display_name }}</a></h2>
+          <p class="mono subtle">{{ server.hostname }}</p>
+        </div>
+        <span class="badge badge-pending status-badge">loading</span>
+      </header>
+      <dl class="stat-grid">
+        <div><dt>CPU</dt><dd class="mono cpu">—</dd></div>
+        <div><dt>Memory</dt><dd class="mono mem">—</dd></div>
+        <div><dt>Network RX/TX</dt><dd class="mono net">—</dd></div>
+        <div><dt>Ports</dt><dd class="mono ports">—</dd></div>
+      </dl>
+      <p class="subtle collected">Waiting for metrics…</p>
+    </article>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
