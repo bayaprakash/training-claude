@@ -4,9 +4,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Always load project .env (cwd-independent; fixes Flask reloader / invalid login)
+load_dotenv(BASE_DIR / ".env", override=False)
 
 
 class Config:

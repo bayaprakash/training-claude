@@ -23,7 +23,8 @@ cp .env.example .env   # never commit .env
 python run.py
 ```
 
-Open http://127.0.0.1:5000
+Open http://127.0.0.1:5095  
+(Uses port **5095** by default so it does not collide with other demos on `:5000`. Override with `PORT=5000 python run.py` if free.)
 
 ### Demo credentials (local only — change for anything beyond this demo)
 
