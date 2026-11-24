@@ -1,12 +1,10 @@
 # InfraWatch — Demo Linux Monitoring
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![CI](https://github.com/bayaprakash/training-claude/actions/workflows/ci.yml/badge.svg)](https://github.com/bayaprakash/training-claude/actions/workflows/ci.yml)
 
 Local Flask demo for L1–L3 teams to view Linux **CPU**, **memory**, **network**, and **listening ports** without day-to-day SSH logins.
 
 Specs: [docs/requirements.md](docs/requirements.md) · Tasks: [docs/TODO.md](docs/TODO.md)
-
-> Replace `OWNER/REPO` in the badge URL after you push to GitHub.
 
 ## Status
 
