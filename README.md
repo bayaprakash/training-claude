@@ -68,3 +68,18 @@ GitHub Actions (`.github/workflows/ci.yml`) on push/PR:
 - `/health` is public for local liveness checks
 - SSH credentials encrypted at rest (Fernet derived from `SECRET_KEY`); never rendered in templates
 - Remote SSH commands are fixed strings (no user input interpolation)
+
+## Lab: localhost SSH metrics (`demouser`)
+
+To collect live metrics from this host via SSH mode:
+
+1. Ensure SSH password auth is enabled and `demouser` exists (lab Step 8).
+2. Sign in to InfraWatch → **Servers** → add:
+   - Hostname: `127.0.0.1`
+   - SSH port: `22`
+   - SSH username: `demouser`
+   - Auth type: password
+   - Credential: `DemoPass123!`
+   - Collection mode: `ssh`
+3. Open **Dashboard** — status should show **online** with CPU/memory/network/ports.
+
